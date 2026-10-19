@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tamil Nadu District Tourism Guide</title>
+<meta name="description" content="Tourist places in all 38 districts of Tamil Nadu: hill stations, waterfalls, beaches, temples and heritage sites.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Tamil&family=Hind+Madurai:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16213a; --kumkum:#b0242f; --turmeric:#f0a500; --leaf:#1f6f5c;
+  --bg:#f2f5f3; --card:#fff; --line:#d5ddd8; --muted:#56635d;
+  --display:"Tiro Tamil",Georgia,serif; --body:"Hind Madurai",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.6 var(--body);padding-bottom:env(safe-area-inset-bottom,0)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--turmeric);outline-offset:2px}
+
+/* Hero: gopuram-tier stripes */
+.hero{background:var(--ink);color:#fff;padding:calc(3rem + env(safe-area-inset-top,0)) 1.25rem 0;position:relative}
+.hero-inner{max-width:1100px;margin:0 auto}
+.hero h1{font:400 clamp(2.2rem,7vw,4.4rem)/1.1 var(--display);margin:0 0 .75rem;max-width:14ch}
+.hero p{max-width:52ch;margin:0 0 2rem;color:#cdd5e6;font-size:1.1rem}
+.tiers{height:34px;margin-top:1rem;background:
+  repeating-linear-gradient(90deg,var(--kumkum) 0 28px,var(--turmeric) 28px 56px,var(--leaf) 56px 84px);
+  clip-path:polygon(0 100%,0 40%,3% 40%,3% 20%,6% 20%,6% 0,94% 0,94% 20%,97% 20%,97% 40%,100% 40%,100% 100%)}
+.stats{display:flex;gap:2rem;flex-wrap:wrap;margin:0 0 1.5rem;padding:0;list-style:none}
+.stats b{display:block;font:400 1.8rem/1 var(--display);color:var(--turmeric)}
+.stats span{font-size:.9rem;color:#cdd5e6}
+
+/* Controls */
+.controls{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:.75rem 1.25rem;padding-top:calc(.75rem + env(safe-area-inset-top,0))}
+.controls-inner{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+.search{flex:1 1 240px;min-width:0;padding:.65rem .9rem;border:1.5px solid var(--ink);border-radius:6px;background:#fff;font:inherit;color:inherit}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap}
+.chip{border:1.5px solid var(--ink);background:transparent;color:var(--ink);padding:.4rem .85rem;border-radius:999px;font:500 .92rem var(--body);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff}
+
+/* Grid */
+main{max-width:1100px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+.count{margin:0 0 1rem;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.25rem}
+.card{background:var(--card);border:1px solid var(--line);border-top:5px solid var(--accent,var(--ink));border-radius:4px;padding:1.1rem 1.2rem 1.2rem}
+.card h2{font:400 1.45rem/1.2 var(--display);margin:0 0 .35rem}
+.tags{display:flex;gap:.4rem;flex-wrap:wrap;margin:0 0 .8rem}
+.tag{font-size:.78rem;font-weight:600;padding:.1rem .55rem;border-radius:3px;color:#fff}
+.t-hill{background:#3a5a8c}.t-nature{background:var(--leaf)}.t-beach{background:#0b7a99}.t-heritage{background:var(--kumkum)}
+.card ul{list-style:none;margin:0;padding:0}
+.card li{border-top:1px solid var(--line)}
+.card li a{display:block;padding:.4rem 0;text-decoration:none}
+.card li a:hover{color:var(--kumkum);text-decoration:underline}
+.empty{padding:2rem;border:1.5px dashed var(--line);text-align:center;color:var(--muted)}
+footer{background:var(--ink);color:#cdd5e6;padding:1.5rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom,0));text-align:center;font-size:.9rem}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <h1>Tamil Nadu, district by district</h1>
+    <p>Temples, hills, waterfalls and coastline across all 38 districts. Search a place, filter by the kind of trip you want, and open any spot on Google Maps.</p>
+    <ul class="stats">
+      <li><b id="s-districts">38</b><span>districts</span></li>
+      <li><b id="s-places">0</b><span>places</span></li>
+    </ul>
+  </div>
+  <div class="tiers" aria-hidden="true"></div>
+</header>
+
+<div class="controls">
+  <div class="controls-inner">
+    <input id="q" class="search" type="search" placeholder="Search a district or place, e.g. Madurai or falls" aria-label="Search districts and places">
+    <div class="chips" id="chips" role="group" aria-label="Filter by trip type"></div>
+  </div>
+</div>
+
+<main>
+  <p class="count" id="count" aria-live="polite"></p>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>Tamil Nadu District Tourism Guide. Check opening hours and travel conditions locally before you go.</footer>
+
+<script>
+// Data: [district, [places]]
+const DATA = [
+["Ariyalur",["Gangaikonda Cholapuram Temple","Karaivetti Bird Sanctuary","Vettakudi Bird Sanctuary"]],
+["Chengalpattu",["Mahabalipuram Shore Temple","Five Rathas","Madras Crocodile Bank","Covelong Beach","Vedanthangal Bird Sanctuary"]],
+["Chennai",["Marina Beach","Elliot’s Beach","Government Museum, Egmore","Fort St. George","Valluvar Kottam","Guindy National Park"]],
+["Coimbatore",["Marudhamalai Temple","Adiyogi Shiva Statue","Siruvani Waterfalls","Kovai Kutralam","Velliangiri Hills"]],
+["Cuddalore",["Pichavaram Mangrove Forest","Silver Beach","Chidambaram Nataraja Temple","Devanathaswamy Temple"]],
+["Dharmapuri",["Hogenakkal Falls","Theerthamalai Temple","Adhiyamankottai","Subramanya Siva Memorial"]],
+["Dindigul",["Kodaikanal Lake","Coaker’s Walk","Pillar Rocks","Berijam Lake","Palani Murugan Temple","Silver Cascade Falls"]],
+["Erode",["Kodiveri Dam","Bhavani Sangameswarar Temple","Bannari Amman Temple","Vellode Bird Sanctuary","Sathyamangalam Tiger Reserve"]],
+["Kallakurichi",["Kalvarayan Hills","Gomukhi Dam","Megam Falls","Manimuktha Dam"]],
+["Kancheepuram",["Kailasanathar Temple","Ekambareswarar Temple","Kamakshi Amman Temple","Varadharaja Perumal Temple","Ulagalanda Perumal Temple"]],
+["Karur",["Pasupatheeswarar Temple","Mayanur Barrage","Nerur Sadhasiva Brahmendra Temple","Ponnaniyar Dam"]],
+["Krishnagiri",["Krishnagiri Dam","Rayakottai Fort","Shree Parshwa Padmavathi Shaktipeet Tirth Dham","Thally Countryside"]],
+["Madurai",["Meenakshi Amman Temple","Thirumalai Nayakkar Mahal","Gandhi Memorial Museum","Alagar Kovil","Pazhamudircholai","Samanar Hills"]],
+["Mayiladuthurai",["Mayuranathaswami Temple","Tharangambadi (Tranquebar)","Danish Fort","Poompuhar","Vaitheeswaran Koil"]],
+["Nagapattinam",["Velankanni Basilica","Nagore Dargah","Point Calimere Wildlife Sanctuary","Sikkal Singaravelar Temple","Kodikkarai Coast"]],
+["Kanniyakumari",["Vivekananda Rock Memorial","Thiruvalluvar Statue","Kanyakumari Beach","Sunset View Point","Padmanabhapuram Palace","Thirparappu Waterfalls","Mathur Aqueduct"]],
+["Namakkal",["Kolli Hills","Agaya Gangai Falls","Namakkal Anjaneyar Temple","Namakkal Fort","Tiruchengode Ardhanareeswarar Temple"]],
+["Perambalur",["Ranjankudi Fort","Siruvachur Madhura Kaliamman Temple","Mayil Oothu Waterfalls","National Fossil Wood Park, Sathanur"]],
+["Pudukkottai",["Sittanavasal Cave","Thirumayam Fort","Avudaiyarkoil Temple","Narthamalai","Kudumiyanmalai"]],
+["Ramanathapuram",["Rameswaram Ramanathaswamy Temple","Dhanushkodi","Pamban Bridge","Abdul Kalam Memorial","Ariyaman Beach","Devipattinam Navabashanam"]],
+["Ranipet",["Ratnagiri Murugan Temple","Arcot Delhi Gate","Sholinghur Yoga Narasimhar Temple","Walajah Big Lake"]],
+["Salem",["Yercaud Lake","Lady’s Seat","Kiliyur Falls","Mettur Dam","1008 Lingam Temple","Sugavaneshwarar Temple"]],
+["Sivaganga",["Chettinad Mansions","Karaikudi","Pillayarpatti Karpaga Vinayagar Temple","Kundrakudi Murugan Temple","Kalaiyar Kovil","Vettangudi Bird Sanctuary"]],
+["Tenkasi",["Courtallam Main Falls","Five Falls (Aintharuvi)","Old Courtallam Falls","Kasi Viswanathar Temple","Gundar Dam","Manimuthar Surroundings"]],
+["Thanjavur",["Brihadeeswarar (Big) Temple","Thanjavur Maratha Palace","Saraswathi Mahal Library","Schwartz Church","Thiruvaiyaru","Darasuram Airavatesvara Temple"]],
+["Theni",["Meghamalai","Suruli Falls","Vaigai Dam","Kumbakkarai Falls","Bodi Mettu","Kurangani Hills"]],
+["Tiruvallur",["Pulicat Lake","Pulicat Bird Sanctuary","Tiruttani Murugan Temple","Poondi Reservoir","Veeraraghava Perumal Temple"]],
+["Tiruvarur",["Thyagarajaswamy Temple","Kamalalayam Temple Tank","Muthupet Mangroves","Koothanur Saraswathi Temple","Mannargudi Rajagopalaswamy Temple"]],
+["Thoothukudi",["Our Lady of Snows Basilica","Manapad Holy Cross Church","Kalugumalai Jain Beds","Vettuvan Koil","Hare Island","Tiruchendur Murugan Temple","Roche Park"]],
+["Tiruchirappalli",["Rockfort Ucchi Pillayar Temple","Sri Ranganathaswamy Temple, Srirangam","Jambukeswarar Temple, Thiruvanaikaval","Kallanai (Grand Anicut)","Mukkombu","St. Joseph’s Church, Teppakulam"]],
+["Tirunelveli",["Nellaiappar Temple","Manimuthar Falls","Papanasam","Agasthiyar Falls","Kalakkad-Mundanthurai Tiger Reserve","Krishnapuram Venkatachalapathy Temple"]],
+["Tirupathur",["Yelagiri Hills","Punganoor Lake","Jalagamparai Waterfalls","Velavan Temple"]],
+["Tiruppur",["Amaravathi Dam","Thirumoorthy Hills","Thirumoorthy Dam and Falls","Avinashi Lingeshwarar Temple","Noyyal River Area"]],
+["Tiruvannamalai",["Arunachaleswarar Temple","Annamalai Hill Girivalam Route","Sathanur Dam","Gingee Fort","Parvathamalai Hills"]],
+["The Nilgiris",["Ooty Botanical Garden","Ooty Lake","Doddabetta Peak","Coonoor","Sim’s Park","Pykara Falls and Lake","Avalanche Lake","Kotagiri"]],
+["Vellore",["Vellore Fort","Jalakandeswarar Temple","Sripuram Golden Temple","Amirthi Zoological Park","Vallimalai Murugan Temple"]],
+["Viluppuram",["Gingee Fort","Melmalayanur Angala Parameswari Temple","Thiruvamathur Abirameswarar Temple"]],
+["Virudhunagar",["Ayyanar Falls","Srivilliputhur Andal Temple","Shenbagathoppu Grizzled Squirrel Wildlife Sanctuary","Kamarajar Memorial House","Sathuragiri Hills"]]
+];
+
+// Trip-type groups ("Best districts for travel")
+const TYPES = {
+  hill:{label:"Hill stations",cls:"t-hill",color:"#3a5a8c",d:["The Nilgiris","Dindigul","Salem","Tirupathur","Theni"]},
+  nature:{label:"Waterfalls & nature",cls:"t-nature",color:"#1f6f5c",d:["Tenkasi","Tirunelveli","Coimbatore","Dharmapuri","Theni","Namakkal"]},
+  beach:{label:"Beaches",cls:"t-beach",color:"#0b7a99",d:["Chennai","Chengalpattu","Kanniyakumari","Ramanathapuram","Cuddalore","Nagapattinam"]},
+  heritage:{label:"Temples & heritage",cls:"t-heritage",color:"#b0242f",d:["Madurai","Thanjavur","Kancheepuram","Tiruchirappalli","Tiruvannamalai","Sivaganga"]}
+};
+
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const typesOf = name => Object.keys(TYPES).filter(k => TYPES[k].d.includes(name));
+const mapUrl = (p, d) => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(p + ", " + d + ", Tamil Nadu");
+
+let active = "all";
+
+function buildChips(){
+  const defs = [["all","All districts"], ...Object.keys(TYPES).map(k => [k, TYPES[k].label])];
+  $("chips").innerHTML = defs.map(([k,l]) =>
+    `<button class="chip" data-k="${k}" aria-pressed="${k===active}">${l}</button>`).join("");
+  $("chips").onclick = e => {
+    const b = e.target.closest(".chip"); if(!b) return;
+    active = b.dataset.k;
+    [...$("chips").children].forEach(c => c.setAttribute("aria-pressed", c.dataset.k === active));
+    render();
+  };
+}
+
+function render(){
+  const q = $("q").value.trim().toLowerCase();
+  const rows = DATA.filter(([d, places]) => {
+    const t = typesOf(d);
+    if(active !== "all" && !t.includes(active)) return false;
+    if(!q) return true;
+    return d.toLowerCase().includes(q) || places.some(p => p.toLowerCase().includes(q));
+  });
+
+  $("grid").innerHTML = rows.length ? rows.map(([d, places]) => {
+    const t = typesOf(d);
+    const accent = t.length ? TYPES[t[0]].color : "var(--ink)";
+    const tags = t.map(k => `<span class="tag ${TYPES[k].cls}">${TYPES[k].label}</span>`).join("");
+    const nameMatch = !q || d.toLowerCase().includes(q);
+    const shown = nameMatch ? places : places.filter(p => p.toLowerCase().includes(q));
+    return `<article class="card" style="--accent:${accent}">
+      <h2>${esc(d)}</h2>
+      <div class="tags">${tags}</div>
+      <ul>${shown.map(p => `<li><a href="${mapUrl(p,d)}" target="_blank" rel="noopener">${esc(p)}</a></li>`).join("")}</ul>
+    </article>`;
+  }).join("") : `<div class="empty">No match found. Try a district name, or clear the search and pick another trip type.</div>`;
+
+  $("count").textContent = rows.length + (rows.length === 1 ? " district" : " districts") + " shown";
+}
+
+$("s-places").textContent = DATA.reduce((n, r) => n + r[1].length, 0);
+$("s-districts").textContent = DATA.length;
+$("q").addEventListener("input", render);
+buildChips();
+render();
+</script>
+</body>
+</html>
